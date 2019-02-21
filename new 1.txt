@@ -1,0 +1,71 @@
+    <?xml version="1.0" encoding="UTF-8"?>
+<wfs:CreateStoredQuery service='WFS' version='2.0.0'
+ xmlns:wfs='http://www.opengis.net/wfs/2.0'
+ xmlns:fes='http://www.opengis.org/fes/2.0'
+ xmlns:gml='http://www.opengis.net/gml/3.2'
+ xmlns:myns='http://www.someserver.com/myns'
+ xmlns:topp='http://www.openplans.org/topp'>
+ <wfs:StoredQueryDefinition id='aggregationQuery'>
+    <wfs:Parameter name='timeid' type='gml:Long'/>
+	<wfs:QueryExpressionText
+     returnFeatureTypes='gis:data'
+     language='urn:ogc:def:queryLanguage:OGC-WFS::WFS_QueryExpression'
+     isPrivate='false'>
+ <wps:Execute version="1.0.0" service="WPS" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.opengis.net/wps/1.0.0" 
+ xmlns:wfs="http://www.opengis.net/wfs" xmlns:wps="http://www.opengis.net/wps/1.0.0" xmlns:ows="http://www.opengis.net/ows/1.1" 
+ xmlns:gml="http://www.opengis.net/gml" xmlns:ogc="http://www.opengis.net/ogc" xmlns:wcs="http://www.opengis.net/wcs/1.1.1" 
+ xmlns:xlink="http://www.w3.org/1999/xlink" 
+ xsi:schemaLocation="http://www.opengis.net/wps/1.0.0 http://schemas.opengis.net/wps/1.0.0/wpsAll.xsd">
+   <ows:Identifier>gs:Aggregate</ows:Identifier>
+  <wps:DataInputs>
+    <wps:Input>
+      <ows:Identifier>features</ows:Identifier>
+      <wps:Reference mimeType="text/xml" xlink:href="http://geoserver/wfs" method="POST">
+        <wps:Body>
+          <wfs:GetFeature service="WFS" version="1.0.0" outputFormat="GML2" xmlns:gis="http://gis/data">
+
+            <wfs:Query typeName="gis:data">
+            	<ogc:Filter>
+            		<ogc:PropertyIsEqualTo>
+            			<ogc:PropertyName>
+            				time_id
+            			</ogc:PropertyName>
+            			<ogc:Literal>
+            				${timeid}
+            			</ogc:Literal>
+            		</ogc:PropertyIsEqualTo>
+            	</ogc:Filter>
+            </wfs:Query>
+          </wfs:GetFeature>
+        </wps:Body>
+      </wps:Reference>
+    </wps:Input>
+    <wps:Input>
+      <ows:Identifier>aggregationAttribute</ows:Identifier>
+      <wps:Data>
+        <wps:LiteralData>value</wps:LiteralData>
+      </wps:Data>
+    </wps:Input>
+    <wps:Input>
+      <ows:Identifier>function</ows:Identifier>
+      <wps:Data>
+        <wps:LiteralData>Average</wps:LiteralData>
+      </wps:Data>
+    </wps:Input>
+    <wps:Input>
+      <ows:Identifier>groupByAttributes</ows:Identifier>
+      <wps:Data>
+        <wps:LiteralData>country_id</wps:LiteralData>
+      </wps:Data>
+    </wps:Input>
+  </wps:DataInputs>
+  <wps:ResponseForm>
+    <wps:RawDataOutput mimeType="application/json">
+      <ows:Identifier>result</ows:Identifier>
+    </wps:RawDataOutput>
+  </wps:ResponseForm>
+</wps:Execute>
+ </wfs:QueryExpressionText>
+ </wfs:StoredQueryDefinition>
+</wfs:CreateStoredQuery>
+ 
